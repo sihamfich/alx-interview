@@ -21,19 +21,16 @@ status_codes = {
 
 # Function to print the current statistics
 def print_stats():
-    # Print the total size of all processed file sizes
+    """Prints the current statistics for the log parsing."""
     print(f"File size: {total_size}")
-    
-    # Print each status code that has been encountered
-    # Only print status codes that have a non-zero count
     for code in sorted(status_codes.keys()):
-        if status_codes[code]:
+        if status_codes[code] > 0:
             print(f"{code}: {status_codes[code]}")
 
 
 # Signal handler to catch keyboard interruption (CTRL+C)
 def signal_handler(sig, frame):
-    # Print statistics when interrupted and then exit the program
+    """Handles a keyboard interruption (CTRL+C) and prints the statistics."""
     print_stats()
     sys.exit(0)
 
@@ -47,25 +44,26 @@ line_count = 0
 # Loop to read each line from the standard input
 for line in sys.stdin:
     line_count += 1  # Increment the line count for each new line
-    
+
     # Define a regex pattern to match the required log format
     pattern = r'^(\S+) - \[.*\] "GET /projects/260 HTTP/1.1" (\d{3}) (\d+)$'
-    
     # Attempt to match the line against the regex pattern
     match = re.match(pattern, line)
-    
+
     if match:
         # Extract the status code and file size from the matched groups
         status_code = match.group(2)
         file_size = int(match.group(3))
-        
         # Add the file size to the total size
         total_size += file_size
-        
+
         # If the status code is a key in our dictionary, update its count
         if int(status_code) in status_codes:
             status_codes[int(status_code)] += 1
-    
+    else:
+        # If the line does not match the expected format, skip it
+        continue
+
     # Every 10 lines, print the statistics
     if line_count % 10 == 0:
         print_stats()

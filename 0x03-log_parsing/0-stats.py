@@ -3,7 +3,8 @@ import sys
 import re
 import signal
 """
-0-stats.py: A script that parses HTTP log lines from standard input, extracts status codes and file sizes,
+0-stats.py: A script that parses HTTP log lines from standard input,
+extracts status codes and file sizes,
 and prints statistics every 10 lines or upon keyboard interruption (CTRL+C).
 """
 

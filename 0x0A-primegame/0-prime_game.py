@@ -24,7 +24,7 @@ def determine_winner_for_round(max_num):
     return "Maria" if total_moves % 2 != 0 else "Ben"
 
 
-def determine_game_winner(num_rounds, round_limits):
+def isWinner(num_rounds, round_limits):
     """Determine the overall winner for multiple rounds."""
     scores = {"Maria": 0, "Ben": 0}
     for limit in round_limits:

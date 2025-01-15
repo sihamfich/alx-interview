@@ -1,39 +1,46 @@
 #!/usr/bin/python3
-""" Module prime_game
+""" Prime Game Module
 """
 
 
-def sieve_primes(limit):
-    """Generate prime numbers up to a given
-    limit using the Sieve of Eratosthenes."""
-    is_prime = [True] * (limit + 1)
-    is_prime[0] = is_prime[1] = False
-    for num in range(2, int(limit ** 0.5) + 1):
+def isWinner(x: int, nums: list) -> str:
+    """
+    Determines the winner of a series of prime number games.
+
+    Parameters:
+    x (int): Number of rounds.
+    nums (list): List of integers representing the upper limits for each round.
+
+    Returns:
+    str: Name of the winner ('Maria' or 'Ben'), or None if it's a tie.
+    """
+    if x < 1 or not nums:
+        return None
+
+    maria_score, ben_score = 0, 0
+
+    # Create a sieve of Eratosthenes up to the largest number in nums
+    max_num = max(nums)
+    is_prime = [True] * (max_num + 1)
+    is_prime[0] = False  # 0 is not a prime number
+    is_prime[1] = False  # 1 is not a prime number
+
+    for num in range(2, int(max_num**0.5) + 1):
         if is_prime[num]:
-            end = limit + 1
-            step = num
-            is_prime[num * num:end:step] = [False] * len(
-                range(num * num, end, step)
-            )
-    return is_prime
+            for multiple in range(num * num, max_num + 1, num):
+                is_prime[multiple] = False
 
+    # Count primes for each round
+    for i in range(x):
+        n = nums[i]
+        primes_up_to_n = sum(is_prime[:n + 1])
+        if primes_up_to_n % 2 == 0:
+            ben_score += 1
+        else:
+            maria_score += 1
 
-def determine_winner_for_round(max_num):
-    """Determine winner for a single round
-    using primes and optimal strategy."""
-    primes = sieve_primes(max_num)
-    total_moves = sum(primes[:max_num + 1])
-    return "Maria" if total_moves % 2 != 0 else "Ben"
-
-
-def isWinner(num_rounds, round_limits):
-    """Determine the overall winner for multiple rounds."""
-    scores = {"Maria": 0, "Ben": 0}
-    for limit in round_limits:
-        winner = determine_winner_for_round(limit)
-        scores[winner] += 1
-    if scores["Maria"] > scores["Ben"]:
+    if maria_score > ben_score:
         return "Maria"
-    elif scores["Ben"] > scores["Maria"]:
+    elif ben_score > maria_score:
         return "Ben"
     return None

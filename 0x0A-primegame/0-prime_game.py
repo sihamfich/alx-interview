@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+""" Module prime_game
+"""
 
 
 def sieve_primes(limit):
